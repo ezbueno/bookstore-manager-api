@@ -1,6 +1,5 @@
 package com.buenoezandro.bookstore.user.entity;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,15 +14,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.buenoezandro.bookstore.book.entity.Book;
+import com.buenoezandro.bookstore.entity.Auditable;
 import com.buenoezandro.bookstore.user.enums.Gender;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Entity
-public class User implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class User extends Auditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +50,7 @@ public class User implements Serializable {
 
 	@Column(nullable = false, columnDefinition = "TIMESTAMP")
 	private LocalDate birthDate;
-	
+
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Book> books;
 

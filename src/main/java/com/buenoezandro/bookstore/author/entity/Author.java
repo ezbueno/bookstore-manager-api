@@ -1,6 +1,5 @@
 package com.buenoezandro.bookstore.author.entity;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,14 +11,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.buenoezandro.bookstore.book.entity.Book;
+import com.buenoezandro.bookstore.entity.Auditable;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Entity
-public class Author implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Author extends Auditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
