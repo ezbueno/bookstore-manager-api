@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(value = AuditingEntityListener.class)
 public abstract class Auditable {
 	
 	@CreatedDate
