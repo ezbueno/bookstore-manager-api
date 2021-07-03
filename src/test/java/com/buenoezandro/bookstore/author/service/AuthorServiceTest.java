@@ -2,6 +2,8 @@ package com.buenoezandro.bookstore.author.service;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.hamcrest.MatcherAssert;
@@ -89,6 +91,29 @@ class AuthorServiceTest {
 
 		Assertions.assertThrows(AuthorNotFoundException.class,
 				() -> this.authorService.findById(expectedFoundAuthorDTO.getId()));
+	}
+
+	@Test
+	void whenListAuthorsIsCalledThenItShouldBeReturned() {
+		AuthorDTO expectedFoundAuthorDTO = this.authorDTOBuilder.buildAuthorDTO();
+		Author expectedFoundAuthor = authorMapper.toModel(expectedFoundAuthorDTO);
+
+		Mockito.when(this.authorRepository.findAll()).thenReturn(Collections.singletonList(expectedFoundAuthor));
+
+		List<AuthorDTO> foundAuthorsDTO = this.authorService.findAll();
+
+		MatcherAssert.assertThat(foundAuthorsDTO.size(), Is.is(1));
+		MatcherAssert.assertThat(foundAuthorsDTO.get(0), Is.is(expectedFoundAuthorDTO));
+
+	}
+
+	@Test
+	void whenListAuthorsIsCalledThenAnEmptyListShouldBeReturned() {
+		Mockito.when(this.authorRepository.findAll()).thenReturn(Collections.emptyList());
+
+		List<AuthorDTO> foundAuthorsDTO = this.authorService.findAll();
+
+		MatcherAssert.assertThat(foundAuthorsDTO.size(), Is.is(0));
 	}
 
 }

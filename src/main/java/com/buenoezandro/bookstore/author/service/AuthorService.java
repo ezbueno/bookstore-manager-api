@@ -1,5 +1,8 @@
 package com.buenoezandro.bookstore.author.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,11 @@ public class AuthorService {
 	public AuthorDTO findById(Long id) {
 		var foundAuthor = this.authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException(id));
 		return authorMapper.toDTO(foundAuthor);
+	}
+
+	@Transactional(readOnly = true)
+	public List<AuthorDTO> findAll() {
+		return this.authorRepository.findAll().stream().map(authorMapper::toDTO).collect(Collectors.toList());
 	}
 
 	@Transactional

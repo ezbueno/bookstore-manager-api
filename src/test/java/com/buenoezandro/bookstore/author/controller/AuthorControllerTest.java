@@ -1,5 +1,7 @@
 package com.buenoezandro.bookstore.author.controller;
 
+import java.util.Collections;
+
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,6 +81,19 @@ class AuthorControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.id", Is.is(expectedFoundAuthorDTO.getId().intValue())))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.name", Is.is(expectedFoundAuthorDTO.getName())))
 				.andExpect((MockMvcResultMatchers.jsonPath("$.age", Is.is(expectedFoundAuthorDTO.getAge()))));
+	}
+
+	@Test
+	void whenGETListIsCalledThenStatusOkShouldBeReturned() throws Exception {
+		AuthorDTO expectedFoundAuthorDTO = this.authorDTOBuilder.buildAuthorDTO();
+
+		Mockito.when(this.authorService.findAll()).thenReturn(Collections.singletonList(expectedFoundAuthorDTO));
+
+		mockMvc.perform(MockMvcRequestBuilders.get(AUTHOR_API_URL_PATH).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Is.is(expectedFoundAuthorDTO.getId().intValue())))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Is.is(expectedFoundAuthorDTO.getName())))
+				.andExpect((MockMvcResultMatchers.jsonPath("$[0].age", Is.is(expectedFoundAuthorDTO.getAge()))));
 	}
 
 }

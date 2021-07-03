@@ -1,5 +1,7 @@
 package com.buenoezandro.bookstore.author.controller;
 
+import java.util.List;
+
 import com.buenoezandro.bookstore.author.dto.AuthorDTO;
 
 import io.swagger.annotations.Api;
@@ -14,6 +16,10 @@ public interface AuthorControllerDocs {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success author found"),
 			@ApiResponse(code = 404, message = "Author not found error code") })
 	AuthorDTO findById(Long id);
+
+	@ApiOperation(value = "List all registered authors")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Return all registered authors") })
+	List<AuthorDTO> findAll();
 
 	@ApiOperation(value = "Author creation operation")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Success author creation"),

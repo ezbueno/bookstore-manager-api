@@ -1,5 +1,7 @@
 package com.buenoezandro.bookstore.author.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,12 @@ public class AuthorController implements AuthorControllerDocs {
 	@ResponseStatus(HttpStatus.OK)
 	public AuthorDTO findById(@PathVariable Long id) {
 		return this.authorService.findById(id);
+	}
+
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public List<AuthorDTO> findAll() {
+		return this.authorService.findAll();
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
