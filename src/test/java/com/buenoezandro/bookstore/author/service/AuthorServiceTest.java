@@ -1,5 +1,7 @@
 package com.buenoezandro.bookstore.author.service;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+
 import java.util.Optional;
 
 import org.hamcrest.MatcherAssert;
@@ -18,13 +20,14 @@ import com.buenoezandro.bookstore.author.builder.AuthorDTOBuilder;
 import com.buenoezandro.bookstore.author.dto.AuthorDTO;
 import com.buenoezandro.bookstore.author.entity.Author;
 import com.buenoezandro.bookstore.author.exception.AuthorAlreadyExistsException;
+import com.buenoezandro.bookstore.author.exception.AuthorNotFoundException;
 import com.buenoezandro.bookstore.author.mapper.AuthorMapper;
 import com.buenoezandro.bookstore.author.repository.AuthorRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AuthorServiceTest {
 
-	private final AuthorMapper authorMapper = AuthorMapper.INSTANCE;
+	private static final AuthorMapper authorMapper = AuthorMapper.INSTANCE;
 
 	@Mock
 	private AuthorRepository authorRepository;
@@ -36,32 +39,56 @@ class AuthorServiceTest {
 
 	@BeforeEach
 	void setup() {
-		authorDTOBuilder = AuthorDTOBuilder.builder().build();
+		this.authorDTOBuilder = AuthorDTOBuilder.builder().build();
 	}
 
 	@Test
 	void whenNewAuthorIsInformedThenItShouldBeCreated() {
-		AuthorDTO expectedAuthorToCreateDTO = authorDTOBuilder.buildAuthorDTO();
+		AuthorDTO expectedAuthorToCreateDTO = this.authorDTOBuilder.buildAuthorDTO();
 		Author expectedCreatedAuthor = authorMapper.toModel(expectedAuthorToCreateDTO);
 
-		Mockito.when(authorRepository.save(expectedCreatedAuthor)).thenReturn(expectedCreatedAuthor);
-		Mockito.when(authorRepository.findByName(expectedAuthorToCreateDTO.getName())).thenReturn(Optional.empty());
+		Mockito.when(this.authorRepository.save(expectedCreatedAuthor)).thenReturn(expectedCreatedAuthor);
+		Mockito.when(this.authorRepository.findByName(expectedAuthorToCreateDTO.getName()))
+				.thenReturn(Optional.empty());
 
-		AuthorDTO createdAuthorDTO = authorService.create(expectedAuthorToCreateDTO);
+		AuthorDTO createdAuthorDTO = this.authorService.create(expectedAuthorToCreateDTO);
 
 		MatcherAssert.assertThat(createdAuthorDTO, Is.is(IsEqual.equalTo(expectedAuthorToCreateDTO)));
 	}
 
 	@Test
 	void whenExistingAuthorIsInformedThenAnExceptionShouldBeThrown() {
-		AuthorDTO expectedAuthorToCreateDTO = authorDTOBuilder.buildAuthorDTO();
+		AuthorDTO expectedAuthorToCreateDTO = this.authorDTOBuilder.buildAuthorDTO();
 		Author expectedCreatedAuthor = authorMapper.toModel(expectedAuthorToCreateDTO);
 
-		Mockito.when(authorRepository.findByName(expectedAuthorToCreateDTO.getName()))
+		Mockito.when(this.authorRepository.findByName(expectedAuthorToCreateDTO.getName()))
 				.thenReturn(Optional.of(expectedCreatedAuthor));
 
 		Assertions.assertThrows(AuthorAlreadyExistsException.class,
-				() -> authorService.create(expectedAuthorToCreateDTO));
+				() -> this.authorService.create(expectedAuthorToCreateDTO));
+	}
+
+	@Test
+	void whenValidIdIsGivenThenAnAuthorShouldBeReturned() {
+		AuthorDTO expectedFoundAuthorDTO = this.authorDTOBuilder.buildAuthorDTO();
+		Author expectedFoundAuthor = authorMapper.toModel(expectedFoundAuthorDTO);
+
+		Mockito.when(this.authorRepository.findById(expectedFoundAuthorDTO.getId()))
+				.thenReturn(Optional.of(expectedFoundAuthor));
+
+		AuthorDTO foundAuthorDTO = this.authorService.findById(expectedFoundAuthorDTO.getId());
+
+		MatcherAssert.assertThat(foundAuthorDTO, Is.is(equalTo(expectedFoundAuthorDTO)));
+	}
+
+	@Test
+	void whenInvalidIdIsGivenThenAnExceptionShouldBeThrown() {
+		AuthorDTO expectedFoundAuthorDTO = this.authorDTOBuilder.buildAuthorDTO();
+
+		Mockito.when(this.authorRepository.findById(expectedFoundAuthorDTO.getId())).thenReturn(Optional.empty());
+
+		Assertions.assertThrows(AuthorNotFoundException.class,
+				() -> this.authorService.findById(expectedFoundAuthorDTO.getId()));
 	}
 
 }

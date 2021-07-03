@@ -1,12 +1,12 @@
 package com.buenoezandro.bookstore.author.service;
 
-import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.buenoezandro.bookstore.author.dto.AuthorDTO;
 import com.buenoezandro.bookstore.author.exception.AuthorAlreadyExistsException;
+import com.buenoezandro.bookstore.author.exception.AuthorNotFoundException;
 import com.buenoezandro.bookstore.author.mapper.AuthorMapper;
 import com.buenoezandro.bookstore.author.repository.AuthorRepository;
 
@@ -21,10 +21,16 @@ public class AuthorService {
 		this.authorRepository = authorRepository;
 	}
 
+	@Transactional(readOnly = true)
+	public AuthorDTO findById(Long id) {
+		var foundAuthor = this.authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException(id));
+		return authorMapper.toDTO(foundAuthor);
+	}
+
+	@Transactional
 	public AuthorDTO create(AuthorDTO authorDTO) {
 		verifyIfExists(authorDTO.getName());
 		var authorToCreate = authorMapper.toModel(authorDTO);
-		authorToCreate.setCreatedDate(LocalDateTime.now());
 		var createdAuthor = this.authorRepository.save(authorToCreate);
 		return authorMapper.toDTO(createdAuthor);
 	}
