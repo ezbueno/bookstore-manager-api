@@ -17,7 +17,7 @@ public class AuthorDTOBuilder {
 	private final int age = 38;
 
 	public AuthorDTO buildAuthorDTO() {
-		return new AuthorDTO(id, name, age);
+		return new AuthorDTO(this.id, this.name, this.age);
 	}
 
 }

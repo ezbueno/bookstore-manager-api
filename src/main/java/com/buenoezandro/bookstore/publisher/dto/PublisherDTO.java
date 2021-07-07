@@ -1,6 +1,6 @@
 package com.buenoezandro.bookstore.publisher.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -29,6 +29,6 @@ public class PublisherDTO {
 
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-	private LocalDateTime foundationDate;
+	private LocalDate foundationDate;
 
 }

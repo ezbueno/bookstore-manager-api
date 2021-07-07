@@ -43,7 +43,7 @@ class AuthorControllerTest {
 	@BeforeEach
 	void setup() {
 		this.authorDTOBuilder = AuthorDTOBuilder.builder().build();
-		mockMvc = MockMvcBuilders.standaloneSetup(this.authorController)
+		this.mockMvc = MockMvcBuilders.standaloneSetup(this.authorController)
 				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
 				.setViewResolvers((s, locale) -> new MappingJackson2JsonView()).build();
 	}
@@ -54,7 +54,7 @@ class AuthorControllerTest {
 
 		Mockito.when(this.authorService.create(expectedCreatedAuthorDTO)).thenReturn(expectedCreatedAuthorDTO);
 
-		mockMvc.perform(MockMvcRequestBuilders.post(AUTHOR_API_URL_PATH).contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(MockMvcRequestBuilders.post(AUTHOR_API_URL_PATH).contentType(MediaType.APPLICATION_JSON)
 				.content(JsonConversionUtils.asJsonString(expectedCreatedAuthorDTO)))
 				.andExpect(MockMvcResultMatchers.status().isCreated())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.id", Is.is(expectedCreatedAuthorDTO.getId().intValue())))
@@ -67,7 +67,7 @@ class AuthorControllerTest {
 		AuthorDTO expectedCreatedAuthorDTO = this.authorDTOBuilder.buildAuthorDTO();
 		expectedCreatedAuthorDTO.setName(null);
 
-		mockMvc.perform(MockMvcRequestBuilders.post(AUTHOR_API_URL_PATH).contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(MockMvcRequestBuilders.post(AUTHOR_API_URL_PATH).contentType(MediaType.APPLICATION_JSON)
 				.content(JsonConversionUtils.asJsonString(expectedCreatedAuthorDTO)))
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
@@ -78,7 +78,7 @@ class AuthorControllerTest {
 
 		Mockito.when(this.authorService.findById(expectedFoundAuthorDTO.getId())).thenReturn(expectedFoundAuthorDTO);
 
-		mockMvc.perform(MockMvcRequestBuilders.get(AUTHOR_API_URL_PATH + "/" + expectedFoundAuthorDTO.getId())
+		this.mockMvc.perform(MockMvcRequestBuilders.get(AUTHOR_API_URL_PATH + "/" + expectedFoundAuthorDTO.getId())
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.id", Is.is(expectedFoundAuthorDTO.getId().intValue())))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.name", Is.is(expectedFoundAuthorDTO.getName())))
@@ -91,7 +91,7 @@ class AuthorControllerTest {
 
 		Mockito.when(this.authorService.findAll()).thenReturn(Collections.singletonList(expectedFoundAuthorDTO));
 
-		mockMvc.perform(MockMvcRequestBuilders.get(AUTHOR_API_URL_PATH).contentType(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(MockMvcRequestBuilders.get(AUTHOR_API_URL_PATH).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Is.is(expectedFoundAuthorDTO.getId().intValue())))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Is.is(expectedFoundAuthorDTO.getName())))
@@ -106,7 +106,7 @@ class AuthorControllerTest {
 
 		doNothing().when(this.authorService).delete(expectedAuthorDeletedId);
 
-		mockMvc.perform(MockMvcRequestBuilders.delete(AUTHOR_API_URL_PATH + "/" + expectedAuthorDeletedId)
+		this.mockMvc.perform(MockMvcRequestBuilders.delete(AUTHOR_API_URL_PATH + "/" + expectedAuthorDeletedId)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isNoContent());
 	}
 

@@ -1,6 +1,6 @@
 package com.buenoezandro.bookstore.publisher.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -33,7 +33,7 @@ public class Publisher extends Auditable {
 	private String code;
 
 	@Column(nullable = false, columnDefinition = "TIMESTAMP")
-	private LocalDateTime foundationDate;
+	private LocalDate foundationDate;
 
 	@OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
 	private List<Book> books;
