@@ -1,5 +1,7 @@
 package com.buenoezandro.bookstore.author.controller;
 
+import static org.mockito.Mockito.doNothing;
+
 import java.util.Collections;
 
 import org.hamcrest.core.Is;
@@ -94,6 +96,18 @@ class AuthorControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Is.is(expectedFoundAuthorDTO.getId().intValue())))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Is.is(expectedFoundAuthorDTO.getName())))
 				.andExpect((MockMvcResultMatchers.jsonPath("$[0].age", Is.is(expectedFoundAuthorDTO.getAge()))));
+	}
+
+	@Test
+	void whenDELETEWithValidIdIsCalledThenNoContentShouldBeReturned() throws Exception {
+		AuthorDTO expectedAuthorDeletedDTO = this.authorDTOBuilder.buildAuthorDTO();
+
+		var expectedAuthorDeletedId = expectedAuthorDeletedDTO.getId();
+
+		doNothing().when(this.authorService).delete(expectedAuthorDeletedId);
+
+		mockMvc.perform(MockMvcRequestBuilders.delete(AUTHOR_API_URL_PATH + "/" + expectedAuthorDeletedId)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isNoContent());
 	}
 
 }
