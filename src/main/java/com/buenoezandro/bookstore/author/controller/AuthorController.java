@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,13 +31,11 @@ public class AuthorController implements AuthorControllerDocs {
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
 	public AuthorDTO findById(@PathVariable Long id) {
 		return this.authorService.findById(id);
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
 	public List<AuthorDTO> findAll() {
 		return this.authorService.findAll();
 	}
@@ -45,6 +44,12 @@ public class AuthorController implements AuthorControllerDocs {
 	@ResponseStatus(HttpStatus.CREATED)
 	public AuthorDTO create(@Valid @RequestBody AuthorDTO authorDTO) {
 		return authorService.create(authorDTO);
+	}
+
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable Long id) {
+		this.authorService.delete(id);
 	}
 
 }

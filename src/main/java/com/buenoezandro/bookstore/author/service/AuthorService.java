@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.buenoezandro.bookstore.author.dto.AuthorDTO;
+import com.buenoezandro.bookstore.author.entity.Author;
 import com.buenoezandro.bookstore.author.exception.AuthorAlreadyExistsException;
 import com.buenoezandro.bookstore.author.exception.AuthorNotFoundException;
 import com.buenoezandro.bookstore.author.mapper.AuthorMapper;
@@ -26,7 +27,7 @@ public class AuthorService {
 
 	@Transactional(readOnly = true)
 	public AuthorDTO findById(Long id) {
-		var foundAuthor = this.authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException(id));
+		var foundAuthor = this.verifyAndGetAuthor(id);
 		return authorMapper.toDTO(foundAuthor);
 	}
 
@@ -37,10 +38,20 @@ public class AuthorService {
 
 	@Transactional
 	public AuthorDTO create(AuthorDTO authorDTO) {
-		verifyIfExists(authorDTO.getName());
+		this.verifyIfExists(authorDTO.getName());
 		var authorToCreate = authorMapper.toModel(authorDTO);
 		var createdAuthor = this.authorRepository.save(authorToCreate);
 		return authorMapper.toDTO(createdAuthor);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		this.verifyAndGetAuthor(id);
+		this.authorRepository.deleteById(id);
+	}
+
+	private Author verifyAndGetAuthor(Long id) {
+		return this.authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException(id));
 	}
 
 	private void verifyIfExists(String authorName) {
