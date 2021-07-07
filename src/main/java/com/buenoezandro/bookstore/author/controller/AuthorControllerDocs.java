@@ -2,8 +2,6 @@ package com.buenoezandro.bookstore.author.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.PathVariable;
-
 import com.buenoezandro.bookstore.author.dto.AuthorDTO;
 
 import io.swagger.annotations.Api;
