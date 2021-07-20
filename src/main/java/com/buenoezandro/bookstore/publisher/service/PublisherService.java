@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.buenoezandro.bookstore.publisher.dto.PublisherDTO;
 import com.buenoezandro.bookstore.publisher.entity.Publisher;
 import com.buenoezandro.bookstore.publisher.exception.PublisherAlreadyExistsException;
+import com.buenoezandro.bookstore.publisher.exception.PublisherNotFoundException;
 import com.buenoezandro.bookstore.publisher.mapper.PublisherMapper;
 import com.buenoezandro.bookstore.publisher.repository.PublisherRepository;
 
@@ -30,6 +31,12 @@ public class PublisherService {
 		var publisherToCreate = publisherMapper.toModel(publisherDTO);
 		var createdPublisher = this.publisherRepository.save(publisherToCreate);
 		return publisherMapper.toDTO(createdPublisher);
+	}
+
+	@Transactional(readOnly = true)
+	public PublisherDTO findById(Long id) {
+		return this.publisherRepository.findById(id).map(publisherMapper::toDTO)
+				.orElseThrow(() -> new PublisherNotFoundException(id));
 	}
 
 	private void verifyIfExists(String name, String code) {
