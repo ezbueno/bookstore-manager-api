@@ -3,6 +3,8 @@ package com.buenoezandro.bookstore.publisher.service;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.hamcrest.MatcherAssert;
@@ -17,6 +19,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.buenoezandro.bookstore.publisher.builder.PublisherDTOBuilder;
+import com.buenoezandro.bookstore.publisher.dto.PublisherDTO;
 import com.buenoezandro.bookstore.publisher.exception.PublisherAlreadyExistsException;
 import com.buenoezandro.bookstore.publisher.exception.PublisherNotFoundException;
 import com.buenoezandro.bookstore.publisher.mapper.PublisherMapper;
@@ -90,5 +93,27 @@ class PublisherServiceTest {
 
 		Assertions.assertThrows(PublisherNotFoundException.class,
 				() -> this.publisherService.findById(expectedPublisherFoundId));
+	}
+
+	@Test
+	void whenListPublisherIsCalledThenItShouldBeReturned() {
+		var expectedPublisherFoundDTO = this.publisherDTOBuilder.buildPublisherDTO();
+		var expectedPublisherFound = this.publisherMapper.toModel(expectedPublisherFoundDTO);
+
+		Mockito.when(this.publisherRepository.findAll()).thenReturn(Collections.singletonList(expectedPublisherFound));
+
+		List<PublisherDTO> foundPublishersDTO = this.publisherService.findAll();
+
+		MatcherAssert.assertThat(foundPublishersDTO.size(), is(1));
+		MatcherAssert.assertThat(foundPublishersDTO.get(0), is(equalTo(expectedPublisherFoundDTO)));
+	}
+
+	@Test
+	void whenListPublisherIsCalledThenAnEmptyListShouldBeReturned() {
+		Mockito.when(this.publisherRepository.findAll()).thenReturn(Collections.emptyList());
+
+		List<PublisherDTO> foundPublishersDTO = this.publisherService.findAll();
+
+		MatcherAssert.assertThat(foundPublishersDTO.size(), is(0));
 	}
 }

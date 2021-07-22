@@ -1,5 +1,7 @@
 package com.buenoezandro.bookstore.publisher.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,11 @@ public class PublisherController implements PublisherControllerDocs {
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PublisherDTO findById(@PathVariable Long id) {
 		return this.publisherService.findById(id);
+	}
+
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<PublisherDTO> findAll() {
+		return this.publisherService.findAll();
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

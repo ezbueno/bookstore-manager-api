@@ -1,6 +1,8 @@
 package com.buenoezandro.bookstore.publisher.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,17 @@ public class PublisherService {
 		this.publisherRepository = publisherRepository;
 	}
 
+	@Transactional(readOnly = true)
+	public PublisherDTO findById(Long id) {
+		return this.publisherRepository.findById(id).map(publisherMapper::toDTO)
+				.orElseThrow(() -> new PublisherNotFoundException(id));
+	}
+
+	@Transactional(readOnly = true)
+	public List<PublisherDTO> findAll() {
+		return this.publisherRepository.findAll().stream().map(publisherMapper::toDTO).collect(Collectors.toList());
+	}
+
 	@Transactional
 	public PublisherDTO create(PublisherDTO publisherDTO) {
 		this.verifyIfExists(publisherDTO.getName(), publisherDTO.getCode());
@@ -31,12 +44,6 @@ public class PublisherService {
 		var publisherToCreate = publisherMapper.toModel(publisherDTO);
 		var createdPublisher = this.publisherRepository.save(publisherToCreate);
 		return publisherMapper.toDTO(createdPublisher);
-	}
-
-	@Transactional(readOnly = true)
-	public PublisherDTO findById(Long id) {
-		return this.publisherRepository.findById(id).map(publisherMapper::toDTO)
-				.orElseThrow(() -> new PublisherNotFoundException(id));
 	}
 
 	private void verifyIfExists(String name, String code) {

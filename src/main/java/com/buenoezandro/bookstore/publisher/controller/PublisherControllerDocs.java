@@ -1,5 +1,7 @@
 package com.buenoezandro.bookstore.publisher.controller;
 
+import java.util.List;
+
 import com.buenoezandro.bookstore.publisher.dto.PublisherDTO;
 
 import io.swagger.annotations.Api;
@@ -14,6 +16,10 @@ public interface PublisherControllerDocs {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success publisher found"),
 			@ApiResponse(code = 404, message = "Publisher not found error") })
 	PublisherDTO findById(Long id);
+
+	@ApiOperation(value = "List all registered publishers")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Return all registered publishers") })
+	List<PublisherDTO> findAll();
 
 	@ApiOperation(value = "Publisher creation operation")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Success publisher creation"),
