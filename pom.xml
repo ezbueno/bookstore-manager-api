@@ -15,7 +15,7 @@
 	<name>bookstore-manager-api</name>
 	<description>Bookstore Manager Project</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>17</java.version>
 		<swagger.version>2.9.2</swagger.version>
 		<swagger-annotations.version>1.5.21</swagger-annotations.version>
 		<swagger-models.version>1.5.21</swagger-models.version>
